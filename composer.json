@@ -1,0 +1,19 @@
+{
+	"autoload": {
+		"psr-4": {
+			"XcounterStudio\\Yii2-geopicker\\" : "src"
+		}
+	},
+	"name": "xcounter-studio/yii2-geopicker",
+	"type": "yii2-extension",
+	"license": "GPL-3.0+",
+	"require": {
+		"yiisoft/yii2": "*"
+	},
+	"authors": [
+		{
+			"name": "Xcounter Studio",
+			"email": "good.dima@gmail.com"
+		}
+	]
+}
