@@ -8,10 +8,6 @@ use yii\widgets\InputWidget;
 class GeoPicker extends InputWidget
 {
 
-    /**
-     *
-     * @var GeoPickerAsset
-     */
     protected $asset;
 
     protected $fieldName;
