@@ -1,13 +1,13 @@
 <?php
 namespace XcounterStudio\Yii2GeoPicker;
 
-use yii\helpers\Html;
-use yii\web\View;
-use yii\widgets\InputWidget;
+use \yii\helpers\Html;
+use \yii\web\View;
+use \yii\widgets\InputWidget;
 
 class GeoPicker extends InputWidget
 {
-
+ 
     protected $asset;
 
     protected $fieldName;
@@ -22,6 +22,8 @@ class GeoPicker extends InputWidget
 
     public $apiKey;
 
+    public $defaultLocation;
+    
     public function init()
     {
         parent::init();
@@ -53,6 +55,8 @@ class GeoPicker extends InputWidget
         $view = $this->getView();
         GeoPickerAsset::$apiKey = $this->apiKey;
         $this->asset = GeoPickerAsset::register($view);
+        $lat = $this->defaultLocation['lat'] ?? 0;
+        $lng = $this->defaultLocation['lng'] ?? 0;
         $js = <<<EOT
         var options = {
           map: "#{$this->mapId}",
@@ -68,7 +72,7 @@ class GeoPicker extends InputWidget
             $("#{$this->autocompleteId}").val(arr[2]);
         } else {
             options.mapOptions = {
-                center: new google.maps.LatLng({lat: 44.7866, lng: 20.4489})
+                center: new google.maps.LatLng({lat: {$lat}, lng: {$lng}})
             }
         }
         $("#{$this->autocompleteId}").geocomplete(options)
@@ -85,9 +89,14 @@ class GeoPicker extends InputWidget
             $("#{$this->autocompleteId}").data('plugin_geocomplete').marker.setPosition(latLng);
             var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key={$this->apiKey}";
             $.getJSON(url, function(json){
-                var loc = json.results[0].formatted_address;
-                $("#{$this->hiddenId}").val(lat + ';' + lng + ';' + loc);
-                $("#{$this->autocompleteId}").val(loc);
+                if (json.status == "OK") {
+                    var loc = json.results[0].formatted_address;
+                    $("#{$this->hiddenId}").val(lat + ';' + lng + ';' + loc);
+                    $("#{$this->autocompleteId}").val(loc);
+                } else {
+                    $("#{$this->hiddenId}").val("");
+                    $("#{$this->autocompleteId}").val("");
+                }
             });
           });
         $("#{$this->findButtonId}").click(function(){
